@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmpTier</title>
+<title>Classement - SmpTier</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,21 +18,18 @@
         <a href="admin.html">Admin</a>
     </nav>
 </header>
-
 <main>
-<h2>Bienvenue sur SmpTier</h2>
-<p>Classement des SMP francophones du Tier 1 au Tier 5 selon plusieurs critères :</p>
-<ul>
-    <li>Serveur payant ou gratuit</li>
-    <li>Twist unique</li>
-    <li>Logo non généré par IA</li>
-    <li>Communauté active</li>
-</ul>
-<img src="assets/logo.png" alt="Illustration SMP" class="main-img">
+<h2>Classement des SMP</h2>
+<table>
+<thead>
+<tr><th>Nom du SMP</th><th>Discord</th><th>IP</th><th>Tier</th></tr>
+</thead>
+<tbody id="classementTable"></tbody>
+</table>
 </main>
-
 <footer>
 <p>© 2025 SmpTier</p>
 </footer>
+<script src="script.js"></script>
 </body>
 </html>

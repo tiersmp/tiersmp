@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmpTier</title>
+<title>Test SMP - SmpTier</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,21 +18,24 @@
         <a href="admin.html">Admin</a>
     </nav>
 </header>
-
 <main>
-<h2>Bienvenue sur SmpTier</h2>
-<p>Classement des SMP francophones du Tier 1 au Tier 5 selon plusieurs critères :</p>
-<ul>
-    <li>Serveur payant ou gratuit</li>
-    <li>Twist unique</li>
-    <li>Logo non généré par IA</li>
-    <li>Communauté active</li>
-</ul>
-<img src="assets/logo.png" alt="Illustration SMP" class="main-img">
+<h2>Réponds aux questions sur ton SMP :</h2>
+<p>Mot de passe requis :</p>
+<input type="password" id="testPassword">
+<button onclick="checkTestPassword()">Valider</button>
+<div id="questions" style="display:none;">
+<form id="testForm">
+<label>Le twist est-il unique ?<input type="text" id="question1" required></label><br>
+<label>Logo non IA ?<input type="text" id="question2" required></label><br>
+<label>Serveur payant ?<input type="text" id="question3" required></label><br>
+<button type="submit">Envoyer</button>
+</form>
+<p id="confirmation"></p>
+</div>
 </main>
-
 <footer>
 <p>© 2025 SmpTier</p>
 </footer>
+<script src="script.js"></script>
 </body>
 </html>

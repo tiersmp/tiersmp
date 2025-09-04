@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SmpTier</title>
+<title>File de test - SmpTier</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,21 +18,19 @@
         <a href="admin.html">Admin</a>
     </nav>
 </header>
-
 <main>
-<h2>Bienvenue sur SmpTier</h2>
-<p>Classement des SMP francophones du Tier 1 au Tier 5 selon plusieurs critères :</p>
-<ul>
-    <li>Serveur payant ou gratuit</li>
-    <li>Twist unique</li>
-    <li>Logo non généré par IA</li>
-    <li>Communauté active</li>
-</ul>
-<img src="assets/logo.png" alt="Illustration SMP" class="main-img">
+<h2>Inscris ton SMP pour passer le test :</h2>
+<form id="fileTestForm">
+<label>Nom du SMP:<input type="text" id="smpName" required></label><br>
+<label>Discord:<input type="text" id="smpDiscord" required></label><br>
+<label>IP (optionnel):<input type="text" id="smpIP"></label><br>
+<button type="submit">S'inscrire</button>
+</form>
+<p id="fileMessage"></p>
 </main>
-
 <footer>
 <p>© 2025 SmpTier</p>
 </footer>
+<script src="script.js"></script>
 </body>
 </html>
