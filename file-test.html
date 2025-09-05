@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SmpTier — Tester mon SMP</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmpTier — Test SMP</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="header container">
   <img src="assets/logo.png" alt="logo" class="logo">
-  <div>
+  <div class="brand-section">
     <div class="brand">SmpTier</div>
-    <div class="lead">File d'attente pour tester un SMP</div>
+    <div class="lead">Soumettre votre SMP</div>
   </div>
   <nav>
     <a href="index.html">Accueil</a>
@@ -22,39 +22,49 @@
   </nav>
 </header>
 
-<main class="container">
+<main>
   <section class="section card">
-    <h2>Inscription à la file de test</h2>
-    <form id="testForm">
-      <input type="text" placeholder="Nom du SMP" required><br><br>
-      <input type="text" placeholder="IP du serveur" required><br><br>
-      <input type="text" placeholder="Votre Discord" required><br><br>
-      <button class="btn btn-primary" type="submit">S'inscrire</button>
+    <h2>Formulaire de test SMP</h2>
+    <form id="smpForm">
+      <input type="text" placeholder="Nom du SMP" required>
+      <input type="text" placeholder="IP / Adresse du serveur" required>
+      <input type="text" placeholder="Votre Discord" required>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
     </form>
-    <p class="lead">Vous recevrez les questions à propos des critères lorsque ce sera votre tour.</p>
+    <p class="lead" id="confirmation"></p>
   </section>
 </main>
 
-<footer class="footer">© 2025 SmpTier</footer>
 <script type="module">
 import { db } from './firebase-init.js';
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const form = document.getElementById('testForm');
-form.addEventListener('submit', async (e)=>{
+const form = document.getElementById('smpForm');
+const confirmation = document.getElementById('confirmation');
+
+form.addEventListener('submit', async (e) => {
   e.preventDefault();
   const inputs = form.querySelectorAll('input');
-  try{
-    await addDoc(collection(db,'smp_queue'),{
+  try {
+    const docRef = await addDoc(collection(db,'smp_queue'),{
       name: inputs[0].value,
       ip: inputs[1].value,
       discord: inputs[2].value,
       timestamp: serverTimestamp()
     });
-    alert('Inscription réussie ! Vous serez notifié pour vos questions.');
+    confirmation.innerHTML = `Inscription réussie ! Suivez votre SMP avec ce lien unique : 
+      <a href="track.html?id=${docRef.id}" target="_blank">Voir mon SMP</a>`;
     form.reset();
-  }catch(err){ console.error(err); alert('Erreur lors de l\'inscription'); }
+  } catch(err){
+    console.error(err);
+    confirmation.textContent = 'Erreur lors de l\'inscription.';
+  }
 });
 </script>
+
+<footer class="footer">
+  © 2025 SmpTier
+</footer>
 </body>
 </html>
+
