@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmpTier — Suivi SMP</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="header container">
+  <img src="assets/logo.png" alt="logo" class="logo">
+  <div class="brand-section">
+    <div class="brand">SmpTier</div>
+    <div class="lead">Formulaire détaillé SMP</div>
+  </div>
+</header>
+
+<main>
+  <section class="section card">
+    <h2>Répondez aux questions</h2>
+    <form id="trackForm">
+      <input type="text" placeholder="Twist du SMP" required>
+      <input type="text" placeholder="Nombre de joueurs max" required>
+      <input type="text" placeholder="Style / thème du SMP" required>
+      <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+    <p class="lead" id="trackMessage"></p>
+  </section>
+</main>
+
+<script type="module">
+import { db } from './firebase-init.js';
+import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// Récupère l'ID dans l'URL
+const params = new URLSearchParams(window.location.search);
+const smpId = params.get('id');
+const trackForm = document.getElementById('trackForm');
+const trackMessage = document.getElementById('trackMessage');
+
+async function checkSMP(){
+  const docRef = doc(db,'smp_queue',smpId);
+  const snap = await getDoc(docRef);
+  if(!snap.exists()){
+    trackMessage.textContent = "SMP introuvable ou formulaire déjà soumis.";
+    trackForm.style.display='none';
+  }
+}
+checkSMP();
+
+trackForm.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const inputs = trackForm.querySelectorAll('input');
+  const docRef = doc(db,'smp_queue',smpId);
+  await updateDoc(docRef,{
+    twist: inputs[0].value,
+    maxPlayers: inputs[1].value,
+    theme: inputs[2].value
+  });
+  trackMessage.textContent = "Merci ! Votre SMP a été mis à jour pour validation.";
+  trackForm.style.display='none';
+});
+</script>
+
+<footer class="footer">© 2025 SmpTier</footer>
+</body>
+</html>
