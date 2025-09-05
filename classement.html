@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SmpTier — Classement</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="header container">
   <img src="assets/logo.png" alt="logo" class="logo">
-  <div>
+  <div class="brand-section">
     <div class="brand">SmpTier</div>
     <div class="lead">Classement public</div>
   </div>
@@ -22,7 +22,7 @@
   </nav>
 </header>
 
-<main class="container">
+<main>
   <section class="section card">
     <h2>Classement public</h2>
     <table class="table">
@@ -40,7 +40,7 @@
         <tr><td colspan="6" class="lead">Chargement…</td></tr>
       </tbody>
     </table>
-    <p class="lead">Pour être dans la tierlist, remplissez le formulaire. Un administrateur validera au plus vite !</p>
+    <p class="lead">Pour être dans le classement, remplissez le formulaire de test SMP. Validation par un administrateur.</p>
   </section>
 </main>
 
@@ -48,15 +48,15 @@
 import { db } from './firebase-init.js';
 import { collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-async function load(){
+async function load() {
   const tbody = document.getElementById('classementTable');
   tbody.innerHTML = '<tr><td colspan="6" class="lead">Chargement…</td></tr>';
-  try{
+  try {
     const q = query(collection(db, "smp_public"), orderBy("tier","asc"));
     const snap = await getDocs(q);
     tbody.innerHTML = '';
-    snap.forEach(doc=>{
-      const d=doc.data();
+    snap.forEach(doc => {
+      const d = doc.data();
       tbody.innerHTML += `<tr>
         <td>${d.name||'-'}</td>
         <td>${d.discord||'-'}</td>
@@ -67,7 +67,7 @@ async function load(){
       </tr>`;
     });
     if(tbody.innerHTML==='') tbody.innerHTML='<tr><td colspan="6">Aucun SMP pour le moment</td></tr>';
-  }catch(e){
+  } catch(e) {
     tbody.innerHTML = '<tr><td colspan="6">Erreur de chargement (console pour détails)</td></tr>';
     console.error(e);
   }
@@ -75,7 +75,8 @@ async function load(){
 load();
 </script>
 
-<footer class="footer">© 2025 SmpTier</footer>
+<footer class="footer">
+  © 2025 SmpTier
+</footer>
 </body>
 </html>
-
