@@ -1,31 +1,87 @@
 <!DOCTYPE html>
-<html lang="fr"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmpTier — Test privé</title>
 <link rel="stylesheet" href="style.css">
-<title>SmpTier</title>
-</head><body>
-<header>
-<img src="assets/logo.png" alt="logo" class="logo">
-<h1>SmpTier</h1>
-<nav>
-<a href="index.html">Accueil</a>
-<a href="criteres.html">Critères</a>
-<a href="classement.html">Classement</a>
-<a href="file-test.html">Tester mon SMP</a>
-<a href="admin.html">Admin</a>
-</nav>
+</head>
+<body>
+<header class="header container">
+  <img src="assets/logo.png" alt="logo" class="logo">
+  <div><div class="brand">SmpTier</div><div class="lead">Test privé</div></div>
+  <nav><a href="index.html">Accueil</a><a href="criteres.html">Critères</a><a href="classement.html">Classement</a><a href="file-test.html">Tester mon SMP</a><a href="admin.html">Admin</a></nav>
 </header>
-<main><h2>Questionnaire SMP</h2>
-<div id="questions">
-<form id="testForm">
-<input id="q1" placeholder="Twist unique ?" required><br>
-<input id="q2" placeholder="Logo non IA ?" required><br>
-<input id="q3" placeholder="Serveur payé ?" required><br>
-<button type="submit">Envoyer</button>
-</form>
-<p id="confirmation"></p>
-</div></main>
-<footer><p>© 2025 SmpTier</p></footer>
-<script type="module" src="script.js"></script>
-</body></html>
+
+<main class="container">
+  <section class="card">
+    <h2>Questionnaire</h2>
+    <p class="lead">Seul l'admin et la personne avec le token peuvent envoyer ces réponses.</p>
+
+    <div id="gate" class="form">
+      <input class="input" id="tokenInput" placeholder="Colle ton token ici (ou laisse l'URL avec ?token=...)">
+      <button class="btn btn-ghost" id="useToken">Utiliser le token</button>
+    </div>
+
+    <form id="testForm" class="form" style="display:none">
+      <textarea id="q_twist" class="input" rows="3" placeholder="Décris le twist (unique)"></textarea>
+      <textarea id="q_logo" class="input" rows="2" placeholder="Logo non IA ? Donne détails/preuves"></textarea>
+      <textarea id="q_paid" class="input" rows="2" placeholder="Le serveur est-il payant ? (hébergement, anti-DDoS)"></textarea>
+      <textarea id="q_extra" class="input" rows="3" placeholder="Autres points forts"></textarea>
+      <button class="btn btn-primary" type="submit">Envoyer mes réponses</button>
+    </form>
+
+    <p id="ok" class="lead"></p>
+  </section>
+</main>
+
+<script type="module">
+import { db } from './firebase-init.js';
+import { collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const params = new URLSearchParams(location.search);
+let token = params.get('token') || '';
+
+const gate = document.getElementById('gate');
+const useBtn = document.getElementById('useToken');
+const tokenInput = document.getElementById('tokenInput');
+const form = document.getElementById('testForm');
+const ok = document.getElementById('ok');
+
+async function validToken(t){
+  if(!t) return false;
+  const q = query(collection(db,'smp_inscriptions'), where('testToken','==', t));
+  const snap = await getDocs(q);
+  return !snap.empty;
+}
+
+async function start(t){
+  if(await validToken(t)) {
+    gate.style.display = 'none';
+    form.style.display = 'grid';
+    token = t;
+  } else alert('Token invalide.');
+}
+
+useBtn.addEventListener('click', ()=> start(tokenInput.value.trim()));
+if(token) start(token);
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  try{
+    await addDoc(collection(db,'smp_tests'), {
+      token,
+      twist: document.getElementById('q_twist').value.trim(),
+      logo: document.getElementById('q_logo').value.trim(),
+      paid: document.getElementById('q_paid').value.trim(),
+      extra: document.getElementById('q_extra').value.trim(),
+      createdAt: serverTimestamp()
+    });
+    ok.textContent = '✅ Réponses enregistrées, merci !';
+    form.reset();
+  }catch(err){ console.error(err); alert('Erreur'); }
+});
+</script>
+
+<footer class="footer">© 2025 SmpTier</footer>
+</body>
+</html>

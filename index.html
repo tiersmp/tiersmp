@@ -1,22 +1,55 @@
 <!DOCTYPE html>
-<html lang="fr"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmpTier — Accueil</title>
 <link rel="stylesheet" href="style.css">
-<title>SmpTier</title>
-</head><body>
-<header>
-<img src="assets/logo.png" alt="logo" class="logo">
-<h1>SmpTier</h1>
-<nav>
-<a href="index.html">Accueil</a>
-<a href="criteres.html">Critères</a>
-<a href="classement.html">Classement</a>
-<a href="file-test.html">Tester mon SMP</a>
-<a href="admin.html">Admin</a>
-</nav>
+</head>
+<body>
+<header class="header container">
+  <img src="assets/logo.png" alt="logo" class="logo">
+  <div>
+    <div class="brand">SmpTier</div>
+    <div class="lead">Classement des meilleurs SMP francophones</div>
+  </div>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="criteres.html">Critères</a>
+    <a href="classement.html">Classement</a>
+    <a href="file-test.html">Tester mon SMP</a>
+    <a href="admin.html">Admin</a>
+  </nav>
 </header>
-<main><h2>Bienvenue sur SmpTier</h2><p>Modifie ce texte dans index.html pour présenter ton projet.</p><img src='assets/logo.png' class='logo'></main>
-<footer><p>© 2025 SmpTier</p></footer>
-<script type="module" src="script.js"></script>
-</body></html>
+
+<main class="container">
+  <section class="hero">
+    <div class="card">
+      <h1>Le Top des SMP FR</h1>
+      <p class="lead">SmpTier évalue les serveurs sur la qualité, l'originalité du twist, l'identité visuelle et la communauté.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="file-test.html">Soumettre mon SMP</a>
+        <a class="btn btn-ghost" href="criteres.html">Voir les critères</a>
+      </div>
+
+      <div class="section">
+        <h3>Pourquoi SmpTier ?</h3>
+        <p class="lead">Un classement clair et transparent pour aider les joueurs à trouver les serveurs qui valent le coup. Chaque SMP est évalué manuellement par notre équipe.</p>
+      </div>
+    </div>
+
+    <div class="card center">
+      <img src="assets/banner.png" alt="Bannière" class="banner">
+      <p class="lead">Remplace <span class="kbd">assets/banner.png</span> et <span class="kbd">assets/logo.png</span> pour personnaliser le site.</p>
+    </div>
+  </section>
+
+  <section class="section card">
+    <h2>À modifier facilement</h2>
+    <p class="lead">Tous les textes sont directement modifiables dans les fichiers HTML. Les couleurs se trouvent dans <span class="kbd">style.css</span>.</p>
+  </section>
+</main>
+
+<footer class="footer">© 2025 SmpTier — Fait pour être personnalisé</footer>
+</body>
+</html>

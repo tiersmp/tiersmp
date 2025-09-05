@@ -1,22 +1,32 @@
 <!DOCTYPE html>
-<html lang="fr"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmpTier — Critères</title>
 <link rel="stylesheet" href="style.css">
-<title>SmpTier</title>
-</head><body>
-<header>
-<img src="assets/logo.png" alt="logo" class="logo">
-<h1>SmpTier</h1>
-<nav>
-<a href="index.html">Accueil</a>
-<a href="criteres.html">Critères</a>
-<a href="classement.html">Classement</a>
-<a href="file-test.html">Tester mon SMP</a>
-<a href="admin.html">Admin</a>
-</nav>
+</head>
+<body>
+<header class="header container">
+  <img src="assets/logo.png" alt="logo" class="logo">
+  <div><div class="brand">SmpTier</div><div class="lead">Critères de classement</div></div>
+  <nav><a href="index.html">Accueil</a><a href="criteres.html">Critères</a><a href="classement.html">Classement</a><a href="file-test.html">Tester mon SMP</a><a href="admin.html">Admin</a></nav>
 </header>
-<main><h2>Critères de classement</h2><p>Ici tu peux décrire les critères de Tier 1 à 5.</p></main>
-<footer><p>© 2025 SmpTier</p></footer>
-<script type="module" src="script.js"></script>
-</body></html>
+
+<main class="container">
+  <section class="card">
+    <h2>Grille de notation</h2>
+    <p class="lead">Nous évaluons chaque SMP selon ces axes (modifiable) :</p>
+    <ul style="text-align:left">
+      <li><b>Hébergement & stabilité</b> (serveur payant/qualité de l'hébergement)</li>
+      <li><b>Twist / gameplay</b> (originalité, profondeur)</li>
+      <li><b>Identité visuelle</b> (logo non IA, cohérence graphique)</li>
+      <li><b>Communauté & modération</b> (activité Discord, events)</li>
+      <li><b>Transparence</b> (règlement, anti-cheat, team)</li>
+    </ul>
+    <p class="lead">Chaque critère influe sur le Tier attribué (1 = top, 5 = à retravailler).</p>
+  </section>
+</main>
+
+<footer class="footer">© 2025 SmpTier</footer>
+</body>
+</html>

@@ -1,22 +1,59 @@
 <!DOCTYPE html>
-<html lang="fr"><head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmpTier — Classement</title>
 <link rel="stylesheet" href="style.css">
-<title>SmpTier</title>
-</head><body>
-<header>
-<img src="assets/logo.png" alt="logo" class="logo">
-<h1>SmpTier</h1>
-<nav>
-<a href="index.html">Accueil</a>
-<a href="criteres.html">Critères</a>
-<a href="classement.html">Classement</a>
-<a href="file-test.html">Tester mon SMP</a>
-<a href="admin.html">Admin</a>
-</nav>
+</head>
+<body>
+<header class="header container">
+  <img src="assets/logo.png" alt="logo" class="logo">
+  <div><div class="brand">SmpTier</div><div class="lead">Classement public</div></div>
+  <nav><a href="index.html">Accueil</a><a href="criteres.html">Critères</a><a href="classement.html">Classement</a><a href="file-test.html">Tester mon SMP</a><a href="admin.html">Admin</a></nav>
 </header>
-<main><h2>Classement public</h2><table><thead><tr><th>Nom</th><th>Discord</th><th>IP</th><th>Tier</th></tr></thead><tbody id='classementTable'></tbody></table></main>
-<footer><p>© 2025 SmpTier</p></footer>
-<script type="module" src="script.js"></script>
-</body></html>
+
+<main class="container">
+  <section class="card">
+    <h2>Classement public</h2>
+    <table class="table">
+      <thead><tr><th>Nom</th><th>Discord</th><th>IP</th><th>Twist</th><th>Date</th><th>Tier</th></tr></thead>
+      <tbody id="classementTable"></tbody>
+    </table>
+    <p class="lead">Les données proviennent de la collection <span class="kbd">smp_public</span> dans Firestore.</p>
+  </section>
+</main>
+
+<script type="module">
+import { db } from './firebase-init.js';
+import { collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+async function load(){
+  const tbody = document.getElementById('classementTable');
+  tbody.innerHTML = '<tr><td colspan="6" class="lead">Chargement…</td></tr>';
+  try{
+    const q = query(collection(db, "smp_public"), orderBy("tier","asc"));
+    const snap = await getDocs(q);
+    tbody.innerHTML = '';
+    snap.forEach(doc=>{
+      const d=doc.data();
+      tbody.innerHTML += `<tr>
+        <td>${d.name||'-'}</td>
+        <td>${d.discord||'-'}</td>
+        <td>${d.ip||'-'}</td>
+        <td>${d.twist||'-'}</td>
+        <td>${d.date||'-'}</td>
+        <td><span class="badge tier-${(d.tier||5)}">Tier ${d.tier||5}</span></td>
+      </tr>`;
+    });
+    if(tbody.innerHTML==='') tbody.innerHTML='<tr><td colspan="6">Aucun SMP pour le moment</td></tr>';
+  }catch(e){
+    tbody.innerHTML = '<tr><td colspan="6">Erreur de chargement (console pour détails)</td></tr>';
+    console.error(e);
+  }
+}
+load();
+</script>
+
+<footer class="footer">© 2025 SmpTier</footer>
+</body>
+</html>

@@ -1,10 +1,8 @@
+// firebase-init.js (module)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// Import des SDK Firebase (CDN modules)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
-// Configuration Firebase (infos utilisateur)
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyAwJAQkQhXfurpcX681wjDEoIRql-Ms0MY",
   authDomain: "smptier.firebaseapp.com",
   projectId: "smptier",
@@ -14,6 +12,5 @@ const firebaseConfig = {
   measurementId: "G-2FTET163LJ"
 };
 
-// Init Firebase
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
