@@ -99,14 +99,15 @@ const criteria = [
   }
 ];
 
-// Attribution des Tiers
+// Attribution des Tiers pour 80 points maximum
 const tiers = [
-  { range: "0-10", tier: "Tier 5", description: "Serveur très faible, à améliorer sur tous les aspects" },
-  { range: "11-20", tier: "Tier 4", description: "Serveur faible, quelques points positifs mais manque de qualité globale" },
-  { range: "21-30", tier: "Tier 3", description: "Serveur correct, gameplay intéressant, identité visuelle et communauté acceptables" },
-  { range: "31-35", tier: "Tier 2", description: "Serveur de qualité, stable, twist original, communauté active" },
-  { range: "36-40", tier: "Tier 1", description: "Serveur excellent, innovation et professionnalisme remarquables, modèle à suivre" }
+  { range: "0-20", tier: "Tier 5", description: "Serveur très faible, à améliorer sur tous les aspects" },
+  { range: "22-40", tier: "Tier 4", description: "Serveur faible, quelques points positifs mais manque de qualité globale" },
+  { range: "42-60", tier: "Tier 3", description: "Serveur correct, gameplay intéressant, identité visuelle et communauté acceptables" },
+  { range: "62-70", tier: "Tier 2", description: "Serveur de qualité, stable, twist original, communauté active" },
+  { range: "72-80", tier: "Tier 1", description: "Serveur excellent, innovation et professionnalisme remarquables, modèle à suivre" }
 ];
+
 
 // Générer le contenu dynamique
 criteria.forEach(crit => {
