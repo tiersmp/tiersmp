@@ -1,72 +1,70 @@
+:root {
+  --bg: #121212;
+  --bg2: #1f1f1f;
+  --text: #f0f0f0;
+  --accent: #00bfff;
+}
+
 body {
-    font-family: 'Arial', sans-serif;
-    background-color: #121212;
-    color: #f0f0f0;
-    margin: 0;
-    text-align: center;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  text-align: center;
 }
+
 header {
-    background-color: #1f1f1f;
-    padding: 20px;
+  background: var(--bg2);
+  padding: 20px;
 }
+
 header .logo {
-    width: 80px;
-    display: block;
-    margin: 0 auto 10px auto;
+  width: 100px;
+  display: block;
+  margin: 0 auto 10px;
 }
+
 nav a {
-    margin: 0 10px;
-    color: #f0f0f0;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s;
+  margin: 0 10px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: bold;
 }
-nav a:hover {
-    color: #00bfff;
+
+nav a:hover { color: var(--accent); }
+
+main { padding: 30px; }
+
+button {
+  background: var(--accent);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 5px;
 }
-main {
-    padding: 30px;
+
+button:hover { background: #009acd; }
+
+input {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  border: none;
 }
-.main-img {
-    width: 200px;
-    margin-top: 20px;
-    border-radius: 10px;
-}
+
 table {
-    width: 80%;
-    margin: 20px auto;
-    border-collapse: collapse;
-}
-table, th, td {
-    border: 1px solid #f0f0f0;
+  width: 80%;
+  margin: 20px auto;
+  border-collapse: collapse;
 }
 th, td {
-    padding: 10px;
-}
-button {
-    padding: 10px 15px;
-    cursor: pointer;
-    background-color: #00bfff;
-    border: none;
-    color: #121212;
-    font-weight: bold;
-    border-radius: 5px;
-    margin-top: 10px;
-}
-button:hover {
-    background-color: #009acd;
-}
-input {
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 5px;
-    border: none;
-    width: 80%;
+  border: 1px solid var(--text);
+  padding: 8px;
 }
 footer {
-    background-color: #1f1f1f;
-    padding: 15px;
-    position: relative;
-    bottom: 0;
-    width: 100%;
+  background: var(--bg2);
+  padding: 15px;
+  margin-top: 30px;
 }

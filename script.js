@@ -1,59 +1,59 @@
-const ADMIN_PASSWORD = 'smpsecret';
-const TEST_PASSWORD = 'testsecret';
+import { db } from './firebase-init.js';
+import { collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { requireAdminPassword } from './helpers.js';
 
-function checkAdminPassword(){
-  const pass = document.getElementById('adminPassword')?.value;
-  if(pass === ADMIN_PASSWORD){
-    document.getElementById('adminForm').style.display = 'block';
-  } else alert('Mot de passe incorrect');
-}
-
-document.getElementById('addSMPForm')?.addEventListener('submit', function(e){
-  e.preventDefault();
-  const smp = {
-    name: document.getElementById('adminSMPName').value,
-    discord: document.getElementById('adminSMPDiscord').value,
-    ip: document.getElementById('adminSMPIP').value,
-    tier: document.getElementById('adminSMPTier').value
-  };
-  let smps = JSON.parse(localStorage.getItem('smps')) || [];
-  smps.push(smp);
-  localStorage.setItem('smps', JSON.stringify(smps));
-  alert('SMP ajouté !');
-  location.reload();
-});
-
-function loadClassement(){
-  const table = document.getElementById('classementTable');
-  if(!table) return;
-  const smps = JSON.parse(localStorage.getItem('smps')) || [];
-  table.innerHTML = '';
-  smps.forEach(smp => {
-    const row = document.createElement('tr');
-    row.innerHTML = `<td>${smp.name}</td><td>${smp.discord}</td><td>${smp.ip || '-'}</td><td>${smp.tier}</td>`;
-    table.appendChild(row);
+// Form inscription
+const fileForm = document.getElementById("fileTestForm");
+if (fileForm) {
+  fileForm.addEventListener("submit", async e => {
+    e.preventDefault();
+    const name = document.getElementById("smpName").value;
+    const discord = document.getElementById("smpDiscord").value;
+    const ip = document.getElementById("smpIP").value;
+    await addDoc(collection(db, "smp_inscriptions"), {name, discord, ip, date: new Date()});
+    document.getElementById("fileMessage").innerText = "✅ Ton SMP a été inscrit !";
+    fileForm.reset();
   });
 }
-loadClassement();
 
-document.getElementById('fileTestForm')?.addEventListener('submit', function(e){
-  e.preventDefault();
-  let file = JSON.parse(localStorage.getItem('fileTest')) || [];
-  file.push({name: document.getElementById('smpName').value, discord: document.getElementById('smpDiscord').value, ip: document.getElementById('smpIP').value});
-  localStorage.setItem('fileTest', JSON.stringify(file));
-  document.getElementById('fileMessage').innerText = 'Inscription réussie ! Patientez votre tour.';
-  this.reset();
-});
-
-function checkTestPassword(){
-  const pass = document.getElementById('testPassword')?.value;
-  if(pass === TEST_PASSWORD){
-    document.getElementById('questions').style.display = 'block';
-  } else alert('Mot de passe incorrect');
+// Classement public
+const classementTable = document.getElementById("classementTable");
+if (classementTable) {
+  (async () => {
+    const q = query(collection(db, "smp_public"), orderBy("tier"));
+    const snap = await getDocs(q);
+    snap.forEach(doc => {
+      const d = doc.data();
+      classementTable.innerHTML += `<tr><td>${d.name}</td><td>${d.discord}</td><td>${d.ip||"-"}</td><td>${d.tier}</td></tr>`;
+    });
+  })();
 }
 
-document.getElementById('testForm')?.addEventListener('submit', function(e){
-  e.preventDefault();
-  alert('Réponses enregistrées !');
-  this.reset();
-});
+// Admin panel
+const loadInscriptions = document.getElementById("loadInscriptions");
+if (loadInscriptions) {
+  loadInscriptions.addEventListener("click", async ()=> {
+    if(!requireAdminPassword()) return alert("Accès refusé");
+    const div = document.getElementById("inscriptions");
+    div.innerHTML = "";
+    const snap = await getDocs(collection(db, "smp_inscriptions"));
+    snap.forEach(doc => {
+      const d = doc.data();
+      div.innerHTML += `<p>${d.name} - ${d.discord} (${d.ip||"-"})</p>`;
+    });
+  });
+}
+
+const loadClassement = document.getElementById("loadClassement");
+if (loadClassement) {
+  loadClassement.addEventListener("click", async ()=> {
+    if(!requireAdminPassword()) return alert("Accès refusé");
+    const div = document.getElementById("publicList");
+    div.innerHTML = "";
+    const snap = await getDocs(collection(db, "smp_public"));
+    snap.forEach(doc => {
+      const d = doc.data();
+      div.innerHTML += `<p>${d.name} - Tier ${d.tier}</p>`;
+    });
+  });
+}

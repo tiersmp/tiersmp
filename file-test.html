@@ -1,36 +1,29 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
+<html lang="fr"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>File de test - SmpTier</title>
 <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<title>SmpTier</title>
+</head><body>
 <header>
-    <img src="assets/logo.png" alt="Logo SmpTier" class="logo">
-    <h1>SmpTier</h1>
-    <nav>
-        <a href="index.html">Accueil</a>
-        <a href="criteres.html">Critères</a>
-        <a href="classement.html">Classement</a>
-        <a href="file-test.html">Tester mon SMP</a>
-        <a href="admin.html">Admin</a>
-    </nav>
+<img src="assets/logo.png" alt="logo" class="logo">
+<h1>SmpTier</h1>
+<nav>
+<a href="index.html">Accueil</a>
+<a href="criteres.html">Critères</a>
+<a href="classement.html">Classement</a>
+<a href="file-test.html">Tester mon SMP</a>
+<a href="admin.html">Admin</a>
+</nav>
 </header>
-<main>
-<h2>Inscris ton SMP pour passer le test :</h2>
+<main><h2>Inscris ton SMP</h2>
 <form id="fileTestForm">
-<label>Nom du SMP:<input type="text" id="smpName" required></label><br>
-<label>Discord:<input type="text" id="smpDiscord" required></label><br>
-<label>IP (optionnel):<input type="text" id="smpIP"></label><br>
+<input id="smpName" placeholder="Nom du SMP" required><br>
+<input id="smpDiscord" placeholder="Discord" required><br>
+<input id="smpIP" placeholder="IP (optionnel)"><br>
 <button type="submit">S'inscrire</button>
 </form>
-<p id="fileMessage"></p>
-</main>
-<footer>
-<p>© 2025 SmpTier</p>
-</footer>
-<script src="script.js"></script>
-</body>
-</html>
+<p id="fileMessage"></p></main>
+<footer><p>© 2025 SmpTier</p></footer>
+<script type="module" src="script.js"></script>
+</body></html>

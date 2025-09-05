@@ -1,41 +1,31 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
+<html lang="fr"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test SMP - SmpTier</title>
 <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<title>SmpTier</title>
+</head><body>
 <header>
-    <img src="assets/logo.png" alt="Logo SmpTier" class="logo">
-    <h1>SmpTier</h1>
-    <nav>
-        <a href="index.html">Accueil</a>
-        <a href="criteres.html">Critères</a>
-        <a href="classement.html">Classement</a>
-        <a href="file-test.html">Tester mon SMP</a>
-        <a href="admin.html">Admin</a>
-    </nav>
+<img src="assets/logo.png" alt="logo" class="logo">
+<h1>SmpTier</h1>
+<nav>
+<a href="index.html">Accueil</a>
+<a href="criteres.html">Critères</a>
+<a href="classement.html">Classement</a>
+<a href="file-test.html">Tester mon SMP</a>
+<a href="admin.html">Admin</a>
+</nav>
 </header>
-<main>
-<h2>Réponds aux questions sur ton SMP :</h2>
-<p>Mot de passe requis :</p>
-<input type="password" id="testPassword">
-<button onclick="checkTestPassword()">Valider</button>
-<div id="questions" style="display:none;">
+<main><h2>Questionnaire SMP</h2>
+<div id="questions">
 <form id="testForm">
-<label>Le twist est-il unique ?<input type="text" id="question1" required></label><br>
-<label>Logo non IA ?<input type="text" id="question2" required></label><br>
-<label>Serveur payant ?<input type="text" id="question3" required></label><br>
+<input id="q1" placeholder="Twist unique ?" required><br>
+<input id="q2" placeholder="Logo non IA ?" required><br>
+<input id="q3" placeholder="Serveur payé ?" required><br>
 <button type="submit">Envoyer</button>
 </form>
 <p id="confirmation"></p>
-</div>
-</main>
-<footer>
-<p>© 2025 SmpTier</p>
-</footer>
-<script src="script.js"></script>
-</body>
-</html>
+</div></main>
+<footer><p>© 2025 SmpTier</p></footer>
+<script type="module" src="script.js"></script>
+</body></html>

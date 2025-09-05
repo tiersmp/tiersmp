@@ -1,41 +1,26 @@
 <!DOCTYPE html>
-<html lang="fr">
-<head>
+<html lang="fr"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin - SmpTier</title>
 <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<title>SmpTier</title>
+</head><body>
 <header>
-    <img src="assets/logo.png" alt="Logo SmpTier" class="logo">
-    <h1>SmpTier</h1>
-    <nav>
-        <a href="index.html">Accueil</a>
-        <a href="criteres.html">Critères</a>
-        <a href="classement.html">Classement</a>
-        <a href="file-test.html">Tester mon SMP</a>
-        <a href="admin.html">Admin</a>
-    </nav>
+<img src="assets/logo.png" alt="logo" class="logo">
+<h1>SmpTier</h1>
+<nav>
+<a href="index.html">Accueil</a>
+<a href="criteres.html">Critères</a>
+<a href="classement.html">Classement</a>
+<a href="file-test.html">Tester mon SMP</a>
+<a href="admin.html">Admin</a>
+</nav>
 </header>
-<main>
-<p>Mot de passe admin :</p>
-<input type="password" id="adminPassword">
-<button onclick="checkAdminPassword()">Valider</button>
-<div id="adminForm" style="display:none;">
-<h2>Ajouter un SMP :</h2>
-<form id="addSMPForm">
-<label>Nom:<input type="text" id="adminSMPName" required></label><br>
-<label>Discord:<input type="text" id="adminSMPDiscord" required></label><br>
-<label>IP:<input type="text" id="adminSMPIP"></label><br>
-<label>Tier (1-5):<input type="number" id="adminSMPTier" min="1" max="5" required></label><br>
-<button type="submit">Ajouter</button>
-</form>
-</div>
-</main>
-<footer>
-<p>© 2025 SmpTier</p>
-</footer>
-<script src="script.js"></script>
-</body>
-</html>
+<main><h2>Admin - Gestion SMP</h2>
+<button id="loadInscriptions">Voir inscriptions</button>
+<div id="inscriptions"></div>
+<button id="loadClassement">Voir classement public</button>
+<div id="publicList"></div></main>
+<footer><p>© 2025 SmpTier</p></footer>
+<script type="module" src="script.js"></script>
+</body></html>
