@@ -1,68 +1,60 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SmpTier — Inscription test</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SmpTier — Tester mon SMP</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="header container">
   <img src="assets/logo.png" alt="logo" class="logo">
-  <div><div class="brand">SmpTier</div><div class="lead">Inscription à la file de test</div></div>
-  <nav><a href="index.html">Accueil</a><a href="criteres.html">Critères</a><a href="classement.html">Classement</a><a href="file-test.html">Tester mon SMP</a><a href="admin.html">Admin</a></nav>
+  <div>
+    <div class="brand">SmpTier</div>
+    <div class="lead">File d'attente pour tester un SMP</div>
+  </div>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="criteres.html">Critères</a>
+    <a href="classement.html">Classement</a>
+    <a href="file-test.html">Tester mon SMP</a>
+    <a href="admin.html">Admin</a>
+  </nav>
 </header>
 
 <main class="container">
-  <section class="card">
-    <h2>Propose ton SMP</h2>
-    <p class="lead">Remplis les informations : tu recevras un lien privé pour répondre au test quand ce sera ton tour.</p>
-
-    <form id="fileForm" class="form">
-      <input class="input" id="name" placeholder="Nom du SMP (ex: WarriorSMP)" required>
-      <input class="input" id="discord" placeholder="Discord (obligatoire)" required>
-      <input class="input" id="ip" placeholder="IP (optionnel si privé ou si pas ouvert)">
-      <input class="input" id="twist" placeholder="Quel est le twist ?" required>
-      <input class="input" id="date" type="date" placeholder="Date de création">
+  <section class="section card">
+    <h2>Inscription à la file de test</h2>
+    <form id="testForm">
+      <input type="text" placeholder="Nom du SMP" required><br><br>
+      <input type="text" placeholder="IP du serveur" required><br><br>
+      <input type="text" placeholder="Votre Discord" required><br><br>
       <button class="btn btn-primary" type="submit">S'inscrire</button>
     </form>
-
-    <p id="msg" class="lead"></p>
+    <p class="lead">Vous recevrez les questions à propos des critères lorsque ce sera votre tour.</p>
   </section>
 </main>
 
+<footer class="footer">© 2025 SmpTier</footer>
 <script type="module">
 import { db } from './firebase-init.js';
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-function makeToken(len=30){ const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; let s=""; for(let i=0;i<len;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s; }
-
-const f = document.getElementById('fileForm');
-const msg = document.getElementById('msg');
-f.addEventListener('submit', async (e)=>{
+const form = document.getElementById('testForm');
+form.addEventListener('submit', async (e)=>{
   e.preventDefault();
-  const token = makeToken();
-  const data = {
-    name: document.getElementById('name').value.trim(),
-    discord: document.getElementById('discord').value.trim(),
-    ip: document.getElementById('ip').value.trim(),
-    twist: document.getElementById('twist').value.trim(),
-    date: document.getElementById('date').value || null,
-    status: 'pending',
-    testToken: token,
-    createdAt: serverTimestamp()
-  };
+  const inputs = form.querySelectorAll('input');
   try{
-    await addDoc(collection(db,'smp_inscriptions'), data);
-    const link = `${location.origin}${location.pathname.replace('file-test.html','')}test.html?token=${token}`;
-    msg.innerHTML = `✅ Inscription réussie ! Garde ce lien privé : <br><span class="kbd">${link}</span>`;
-    f.reset();
-  }catch(err){
-    console.error(err);
-    msg.textContent = 'Erreur lors de l\'inscription.';
-  }
+    await addDoc(collection(db,'smp_queue'),{
+      name: inputs[0].value,
+      ip: inputs[1].value,
+      discord: inputs[2].value,
+      timestamp: serverTimestamp()
+    });
+    alert('Inscription réussie ! Vous serez notifié pour vos questions.');
+    form.reset();
+  }catch(err){ console.error(err); alert('Erreur lors de l\'inscription'); }
 });
 </script>
-
-<footer class="footer">© 2025 SmpTier</footer>
 </body>
 </html>

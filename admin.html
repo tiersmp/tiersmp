@@ -1,144 +1,81 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SmpTier — Admin</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="header container">
   <img src="assets/logo.png" alt="logo" class="logo">
-  <div><div class="brand">SmpTier</div><div class="lead">Espace admin</div></div>
-  <nav><a href="index.html">Accueil</a><a href="criteres.html">Critères</a><a href="classement.html">Classement</a><a href="file-test.html">Tester mon SMP</a><a href="admin.html">Admin</a></nav>
+  <div>
+    <div class="brand">SmpTier</div>
+    <div class="lead">Administration</div>
+  </div>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="criteres.html">Critères</a>
+    <a href="classement.html">Classement</a>
+    <a href="file-test.html">Tester mon SMP</a>
+    <a href="admin.html">Admin</a>
+  </nav>
 </header>
 
 <main class="container">
-  <section class="card">
-    <h2>Connexion admin</h2>
-    <p class="lead">Zone admin <span class="kbd"></span>(Pour devenir évaluateur, faites un ticket sur le discord)</p>
-    <button class="btn btn-primary" id="enter">Entrer admin</button>
-  </section>
-
-  <section class="grid grid-2" id="panel" style="display:none">
-    <div class="card">
-      <h3>Inscriptions en attente</h3>
-      <div id="pendingList">Chargement…</div>
-    </div>
-
-    <div class="card">
-      <h3>Classement public (éditer)</h3>
-      <div id="publicList">Chargement…</div>
+  <section class="section card">
+    <h2>Admin</h2>
+    <input type="password" id="adminPass" placeholder="Mot de passe admin">
+    <button class="btn btn-primary" id="loginBtn">Se connecter</button>
+    <div id="adminPanel" style="display:none; margin-top:20px;">
+      <h3>Ajouter un SMP</h3>
+      <form id="addSmpForm">
+        <input type="text" placeholder="Nom du SMP" required><br><br>
+        <input type="text" placeholder="Discord" required><br><br>
+        <input type="text" placeholder="IP" required><br><br>
+        <input type="text" placeholder="Twist" required><br><br>
+        <input type="date" placeholder="Date de création" required><br><br>
+        <input type="number" placeholder="Tier (1-5)" required min="1" max="5"><br><br>
+        <button class="btn btn-primary" type="submit">Ajouter</button>
+      </form>
     </div>
   </section>
 </main>
 
+<footer class="footer">© 2025 SmpTier</footer>
+
 <script type="module">
-import { requireAdminPassword } from './helpers.js';
 import { db } from './firebase-init.js';
-import {
-  collection, query, where, onSnapshot, addDoc, deleteDoc, doc, getDocs, updateDoc, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const enter = document.getElementById('enter');
-const panel = document.getElementById('panel');
-const pendingList = document.getElementById('pendingList');
-const publicList = document.getElementById('publicList');
+const password = "TonMotDePasseAdmin123"; // change le mot de passe ici
+const loginBtn = document.getElementById('loginBtn');
+const adminPanel = document.getElementById('adminPanel');
 
-enter.addEventListener('click', ()=> {
-  if(requireAdminPassword()){
-    panel.style.display = 'grid';
-    loadPending();
-    loadPublic();
-  }
+loginBtn.addEventListener('click', ()=>{
+  const pass = document.getElementById('adminPass').value;
+  if(pass === password){ adminPanel.style.display = 'block'; }
+  else{ alert('Mot de passe incorrect'); }
 });
 
-function bindPendingActions(){
-  document.querySelectorAll('.approveBtn').forEach(b=>{
-    b.onclick = async ()=> {
-      const id = b.dataset.id;
-      const docRef = doc(db,'smp_inscriptions', id);
-      // fetch doc data quickly
-      const snap = await getDocs(query(collection(db,'smp_inscriptions')));
-      let found=null;
-      snap.forEach(d=>{ if(d.id===id) found=d; });
-      if(!found) { alert('Données manquantes'); return; }
-      const data = found.data();
-      const tier = prompt('Attribue un Tier (1-5) :','3');
-      if(!tier) return;
-      await addDoc(collection(db,'smp_public'), {
-        name: data.name, discord: data.discord, ip: data.ip||'', twist: data.twist||'', date: data.date||'', tier: Number(tier)||3, createdAt: serverTimestamp()
-      });
-      await deleteDoc(docRef);
-      alert('SMP mis en public (classement).');
-    };
-  });
-  document.querySelectorAll('.delBtn').forEach(b=>{
-    b.onclick = async ()=> {
-      const id = b.dataset.id;
-      if(confirm('Supprimer cette inscription ?')) await deleteDoc(doc(db,'smp_inscriptions',id));
-    };
-  });
-}
-
-function bindPublicActions(){
-  document.querySelectorAll('.editTier').forEach(b=>{
-    b.onclick = async ()=>{
-      const id = b.dataset.id;
-      const newt = prompt('Nouveau Tier (1-5) ?','3');
-      if(!newt) return;
-      await updateDoc(doc(db,'smp_public',id), { tier: Number(newt)||3 });
-    };
-  });
-  document.querySelectorAll('.removePub').forEach(b=>{
-    b.onclick = async ()=>{
-      const id = b.dataset.id;
-      if(confirm('Supprimer du classement public ?')) await deleteDoc(doc(db,'smp_public',id));
-    };
-  });
-}
-
-function loadPending(){
-  const q = query(collection(db,'smp_inscriptions'), where('status','==','pending'));
-  onSnapshot(q, snap=>{
-    pendingList.innerHTML='';
-    if(snap.empty) pendingList.innerHTML='<p>Aucune inscription en attente</p>';
-    snap.forEach(d=>{
-      const x=d.data();
-      pendingList.innerHTML += `<div style="margin-bottom:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02)">
-        <b>${x.name||'-'}</b> — ${x.discord||'-'} — ${x.ip||'-'}<br>
-        Twist: ${x.twist||'-'} — Date: ${x.date||'-'}<br>
-        <a href="test.html?token=${x.testToken}" target="_blank" class="kbd">Lien test</a>
-        <div style="margin-top:8px">
-          <button class="btn btn-primary approveBtn" data-id="${d.id}">Approuver</button>
-          <button class="btn btn-ghost delBtn" data-id="${d.id}">Supprimer</button>
-        </div>
-      </div>`;
+const form = document.getElementById('addSmpForm');
+form.addEventListener('submit', async e=>{
+  e.preventDefault();
+  const inputs = form.querySelectorAll('input');
+  try{
+    await addDoc(collection(db,'smp_public'),{
+      name: inputs[0].value,
+      discord: inputs[1].value,
+      ip: inputs[2].value,
+      twist: inputs[3].value,
+      date: inputs[4].value,
+      tier: parseInt(inputs[5].value)
     });
-    bindPendingActions();
-  });
-}
-
-function loadPublic(){
-  const q = query(collection(db,'smp_public'));
-  onSnapshot(q, snap=>{
-    publicList.innerHTML='';
-    if(snap.empty) publicList.innerHTML='<p>Aucun SMP public</p>';
-    snap.forEach(d=>{
-      const x=d.data();
-      publicList.innerHTML += `<div style="margin-bottom:12px;padding:10px;border-radius:10px;background:rgba(255,255,255,0.02)">
-        <b>${x.name}</b> — ${x.discord||'-'} — ${x.ip||'-'}<br>
-        Twist: ${x.twist||'-'} — Date: ${x.date||'-'} — <span class="kbd">Tier ${x.tier||5}</span>
-        <div style="margin-top:8px">
-          <button class="btn btn-primary editTier" data-id="${d.id}">Modifier Tier</button>
-          <button class="btn btn-danger removePub" data-id="${d.id}">Supprimer</button>
-        </div>
-      </div>`;
-    });
-    bindPublicActions();
-  });
-}
+    alert('SMP ajouté au classement !');
+    form.reset();
+  }catch(err){ console.error(err); alert('Erreur lors de l\'ajout'); }
+});
 </script>
-
-<footer class="footer">© 2025 SmpTier</footer>
 </body>
 </html>
+
