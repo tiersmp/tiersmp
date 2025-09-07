@@ -1,0 +1,266 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+
+interface SmpData {
+  id: string;
+  name?: string;
+  ip?: string;
+  discord?: string;
+  twist?: string;
+  maxPlayers?: string;
+  theme?: string;
+  status?: 'pending' | 'in_review' | 'approved' | 'rejected';
+  timestamp?: any;
+}
+
+export default function TrackPage() {
+  const searchParams = useSearchParams();
+  const smpId = searchParams.get('id');
+  
+  const [smpData, setSmpData] = useState<SmpData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState({ text: '', isError: false });
+  const [formData, setFormData] = useState({
+    twist: '',
+    maxPlayers: '',
+    theme: ''
+  });
+
+  useEffect(() => {
+    const fetchSmpData = async () => {
+      if (!smpId) {
+        setMessage({ text: 'Aucun identifiant SMP fourni.', isError: true });
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const docRef = doc(db, 'smp_queue', smpId);
+        const docSnap = await getDoc(docRef);
+
+        if (!docSnap.exists()) {
+          setMessage({ text: 'SMP introuvable ou formulaire déjà soumis.', isError: true });
+          setLoading(false);
+          return;
+        }
+
+        const data = { id: docSnap.id, ...docSnap.data() } as SmpData;
+        setSmpData(data);
+        
+        // Pré-remplir le formulaire avec les données existantes
+        if (data.twist || data.maxPlayers || data.theme) {
+          setFormData({
+            twist: data.twist || '',
+            maxPlayers: data.maxPlayers || '',
+            theme: data.theme || ''
+          });
+        }
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données:', error);
+        setMessage({ 
+          text: 'Une erreur est survenue lors de la récupération des données.', 
+          isError: true 
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSmpData();
+  }, [smpId]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!smpId) {
+      setMessage({ text: 'Identifiant SMP manquant.', isError: true });
+      return;
+    }
+
+    try {
+      const docRef = doc(db, 'smp_queue', smpId);
+      await updateDoc(docRef, {
+        twist: formData.twist.trim(),
+        maxPlayers: formData.maxPlayers.trim(),
+        theme: formData.theme.trim(),
+        status: 'in_review',
+        updatedAt: new Date()
+      });
+      
+      setMessage({ 
+        text: 'Merci ! Votre SMP a été mis à jour et est en attente de validation par notre équipe.', 
+        isError: false 
+      });
+      
+      // Mettre à jour l'état local
+      setSmpData(prev => ({
+        ...prev!,
+        ...formData,
+        status: 'in_review'
+      }));
+      
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du SMP:', error);
+      setMessage({ 
+        text: 'Une erreur est survenue lors de la mise à jour. Veuillez réessayer.', 
+        isError: true 
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="text-white">Chargement en cours...</div>
+      </div>
+    );
+  }
+
+  if (message.text) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className={`p-6 rounded-lg ${
+            message.isError ? 'bg-red-900/50' : 'bg-green-900/50'
+          }`}>
+            <p className="text-center">{message.text}</p>
+            {!message.isError && (
+              <div className="mt-4 text-center">
+                <a 
+                  href="/" 
+                  className="text-blue-400 hover:text-blue-300 underline"
+                >
+                  Retour à l'accueil
+                </a>
+              </div>
+            )}
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-900 text-white">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          <div className="p-6">
+            <h1 className="text-2xl font-bold mb-6">Complétez les informations de votre SMP</h1>
+            
+            <div className="mb-6 p-4 bg-gray-700 rounded-lg">
+              <h2 className="text-lg font-semibold mb-2">Récapitulatif</h2>
+              <p><span className="text-gray-400">Nom du SMP:</span> {smpData?.name}</p>
+              <p><span className="text-gray-400">IP:</span> {smpData?.ip}</p>
+              <p><span className="text-gray-400">Votre Discord:</span> {smpData?.discord}</p>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="twist" className="block text-sm font-medium text-gray-300 mb-1">
+                  Twist du SMP *
+                </label>
+                <input
+                  type="text"
+                  id="twist"
+                  name="twist"
+                  value={formData.twist}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: Un monde où les joueurs peuvent voler"
+                  required
+                />
+                <p className="mt-1 text-xs text-gray-400">
+                  Décrivez ce qui rend votre SMP unique et intéressant.
+                </p>
+              </div>
+              
+              <div>
+                <label htmlFor="maxPlayers" className="block text-sm font-medium text-gray-300 mb-1">
+                  Nombre de joueurs maximum *
+                </label>
+                <input
+                  type="number"
+                  id="maxPlayers"
+                  name="maxPlayers"
+                  value={formData.maxPlayers}
+                  onChange={handleChange}
+                  min="1"
+                  className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: 50"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="theme" className="block text-sm font-medium text-gray-300 mb-1">
+                  Style / thème du SMP *
+                </label>
+                <textarea
+                  id="theme"
+                  name="theme"
+                  value={formData.theme}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full px-4 py-2 rounded-md bg-gray-700 border border-gray-600 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Décrivez l'ambiance et le style de votre SMP"
+                  required
+                />
+              </div>
+              
+              {message.text && (
+                <div className={`p-3 rounded-md ${message.isError ? 'bg-red-900/50' : 'bg-green-900/50'}`}>
+                  {message.text}
+                </div>
+              )}
+              
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Envoyer pour évaluation
+                </button>
+              </div>
+            </form>
+            
+            <div className="mt-8 p-4 bg-gray-800/50 rounded-md">
+              <h3 className="font-medium text-blue-400 mb-2">Prochaines étapes</h3>
+              <ol className="list-decimal list-inside space-y-1 text-sm text-gray-300">
+                <li>Notre équipe examinera votre demande sous 24-48h</li>
+                <li>Nous vous contacterons sur Discord pour toute information complémentaire</li>
+                <li>Une fois approuvé, votre SMP apparaîtra dans notre classement public</li>
+              </ol>
+              
+              <div className="mt-4 pt-4 border-t border-gray-700">
+                <p className="text-sm text-gray-400">
+                  Vous pourrez suivre l'état de votre demande depuis cette page.
+                  Enregistrez ce lien pour y revenir plus tard.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+}
