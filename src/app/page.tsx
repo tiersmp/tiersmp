@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CustomLink from '@/components/ui/CustomLink';
 
 export default function Home() {
   return (
@@ -15,9 +15,9 @@ export default function Home() {
               Évaluez et trouvez les serveurs SMP francophones selon qualité, originalité, 
               identité visuelle et communauté.
             </p>
-            <div className="cta">
-              <Link href="/tester" className="btn btn-primary">Soumettre mon SMP</Link>
-              <Link href="/criteres" className="btn btn-secondary">Voir les critères</Link>
+            <div className="cta flex flex-wrap gap-4 justify-center">
+              <CustomLink href="/tester" className="btn btn-primary">Soumettre mon SMP</CustomLink>
+              <CustomLink href="/criteres" className="btn btn-secondary">Voir les critères</CustomLink>
             </div>
           </div>
         </section>
